@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from "react";
+import {
+  SafeAreaView,
+  StatusBar,
+  LogBox,
+  Appearance,
+  Platform,
+} from "react-native";
+import Route from "./src/navigation/Router";
+import { AuthProvider } from "./src/store/AuthContext";
 
-export default function App() {
+const App = () => {
+  LogBox.ignoreLogs([
+    "ViewPropTypes will be removed",
+    "ColorPropType will be removed",
+  ]);
+
+  useEffect(() => {
+    Appearance.getColorScheme() === "dark"
+      ? StatusBar.setBarStyle("light-content")
+      : StatusBar.setBarStyle("dark-content");
+    Platform.OS === "android" &&
+      StatusBar.setBackgroundColor(
+        Appearance.getColorScheme() === "dark" ? "#000" : "#fff"
+      );
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <AuthProvider>
+        <StatusBar barStyle="dark-content" />
+        <Route />
+      </AuthProvider>
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
