@@ -19,11 +19,7 @@ import ModalContact from "../../components/Addcontact/ModelContact";
 import TextInputItem from "../../components/Addcontact/TextInputItem";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AuthContext from "../../store/AuthContext";
-import {
-  DuplicateInfoModel,
-  DuplicateModel,
-  FormInput,
-} from "../../components/Addcontact/ContextAddContact";
+import { FormInput } from "../../components/Addcontact/ContextAddContact";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { useTranslation } from "react-i18next";
 
@@ -170,7 +166,7 @@ const AddContact = ({ contact, loading, navigation }) => {
   return (
     <Provider>
       <LoadingDialog visible={loadingDialog} />
-      <ModalContact
+      {/* <ModalContact
         visible={duplicate}
         onPress={handleDuplicate}
         onPressVisable={() => setDuplicate(false)}
@@ -183,7 +179,7 @@ const AddContact = ({ contact, loading, navigation }) => {
         onPressVisable={() => setDuplicateOther(false)}
         context={DuplicateInfoModel(duplicateInfo.owner)}
         onCancel={handleOnCancel}
-      />
+      /> */}
       <View style={{ alignItems: "center" }}>
         <ShimmerPlaceholder
           visible={loading}

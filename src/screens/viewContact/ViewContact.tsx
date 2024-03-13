@@ -44,7 +44,7 @@ const ViewContact = ({ navigation, route }) => {
 
   const [contact, setContact] = useState(route.params.contact);
   const authCtx = useContext(AuthContext);
-  console.log(route);
+  // console.log("aaaa", route.param);
   //   useEffect(() => {
   // setLoading(true);
   // FetchApi(
@@ -69,7 +69,9 @@ const ViewContact = ({ navigation, route }) => {
   };
 
   const handlePressUpdateContact = () => {
-    navigation.navigate("UpdateContact");
+    navigation.navigate("UpdateContact", {
+      contact,
+    });
   };
 
   const getMessage = (status, data) => {

@@ -139,7 +139,7 @@ const Home = ({ route, navigation }) => {
 
   const handlePressSort = (item) => {
     setSort(item.value);
-    console.log(item.value);
+    // console.log(item.value);
     listContact.sort((a, b) => {
       if (item.value === "create_date") {
         let dateA = new Date(a.created_at.split("-").reverse().join("-"));

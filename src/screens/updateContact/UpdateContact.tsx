@@ -15,20 +15,16 @@ import ModalContact from "../../components/Addcontact/ModelContact";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import AuthContext from "../../store/AuthContext";
 import { FormInput } from "../../components/Addcontact/ContextAddContact";
-import {
-  DuplicateInfoModel,
-  DuplicateModel,
-} from "../../components/Addcontact/ContextAddContact";
 
 const UpdateContact = ({ route, navigation }) => {
-  const authCtx = useContext(AuthContext);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
-  const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { t, i18n } = useTranslation();
-  const formRef = useRef();
+  const images = {
+    card1: require("../../../assets/cards/card1.png"),
+    card2: require("../../../assets/cards/card2.png"),
+    card3: require("../../../assets/cards/card3.png"),
+    // Add more as needed
+  };
   const [value, setValue] = useState({
     name: "",
     job_title: "",
@@ -41,224 +37,48 @@ const UpdateContact = ({ route, navigation }) => {
     website: "",
     img_url: "",
   });
-  //   useEffect(() => {
-  //     route.params &&
-  //       route.params.idContact &&
-  //       formRef.current &&
-  //       FetchApi(
-  //         `${ContactAPI.ViewContact}/${route.params.idContact}`,
-  //         Method.GET,
-  //         ContentType.JSON,
-  //         undefined,
-  //         getContact
-  //       );
-  //     if (route.params && route.params.contact && formRef.current) {
-  //       formRef.current.setValues(route.params.contact);
-  //       setLoading(true);
-  //     }
-  //     if (route.params && route.params.addContact && formRef.current) {
-  //       formRef.current.setValues({
-  //         ...value,
-  //         img_url: "https://ncmsystem.azurewebsites.net/Images/noImage.jpg",
-  //       });
-  //       setLoading(true);
-  //     }
-  //   }, [route.params]);
-
-  const [duplicate, setDuplicate] = useState(false);
-
-  const [duplicateOther, setDuplicateOther] = useState(false);
-  const [duplicateInfo, setDuplicateInfo] = useState({
-    id: "",
-    id_duplicate: "",
-    owner: "",
-  });
 
   const formInput = FormInput();
-
-  const getContact = (status, data) => {
-    authCtx.checkToken();
-    if (!status) {
-      Alert.alert("", t("Something_Wrong"));
-      return;
-    }
-    if (status && data) {
-      if (data.data && formRef.current) {
-        // formRef.current.setValues(data.data);
-        setLoading(true);
-      }
-    }
-  };
-
+  // console.log(route.params);
   const handleOnSubmit = (values) => {
-    setIsLoading(true);
-    // route.params &&
-    //   route.params.idContact &&
-    //   FetchApi(
-    //     `${ContactAPI.UpdateContact}/${route.params.idContact}`,
-    //     Method.PUT,
-    //     ContentType.JSON,
-    //     values,
-    //     getMessage
-    //   );
-    // route.params &&
-    //   route.params.contact &&
-    //   FetchApi(
-    //     ContactAPI.AddContact,
-    //     Method.POST,
-    //     ContentType.JSON,
-    //     values,
-    //     getMessage
-    //   );
-    // route.params &&
-    //   route.params.addContact &&
-    //   FetchApi(
-    //     ContactAPI.AddContact,
-    //     Method.POST,
-    //     ContentType.JSON,
-    //     values,
-    //     getMessage
-    //   );
+    // Logic to handle form submission
+    console.log("aa");
   };
+  // console.log(route.params.contact);
 
-  const getMessage = (status, data) => {
-    authCtx.checkToken();
-    setIsLoading(false);
-    if (status && data) {
-      if (data.message === "C0009") {
-        navigation.dispatch(StackActions.popToTop());
-        route.params &&
-          route.params.contact &&
-          navigation.navigate("HomeSwap", {
-            screen: "ViewContact",
-            params: { idContact: data.data.id, showFooter: true },
-          });
-        return;
-      }
-      if (data.message === "C0010") {
-        navigation.dispatch(StackActions.popToTop());
-        route.params &&
-          route.params.idContact &&
-          navigation.navigate("HomeSwap", {
-            screen: "ViewContact",
-            params: { idContact: route.params.idContact, showFooter: true },
-          });
-        return;
-      }
-      if (data.message === "D0001") {
-        setDuplicate(true);
-        setDuplicateInfo({ ...duplicateInfo, id: data.data.id });
-        return;
-      }
-      if (data.message === "D0003") {
-        setDuplicateOther(true);
-        setDuplicateInfo({
-          id: data.data.id,
-          id_duplicate: data.data.id_duplicate,
-          owner: data.data.user_name,
-        });
-        return;
-      }
-    }
-    if (!status) {
-      if (data) {
-        if (data.message === "C0005") {
-          Alert.alert("", t("Screen_AddContact_Alert_Infomation_Not_Valid"));
-          return;
-        }
-        if (data.message === "D0005") {
-          Alert.alert("", t("Screen_UpdateContact_Alert_Message"), [
-            { text: "OK" },
-          ]);
-          return;
-        }
-      }
-      if (!data) {
-        Alert.alert("", t("Something_Wrong"));
-        return;
-      }
-    }
-  };
-
-  const handleDuplicateOther = () => {
-    // FetchApi(
-    //   `${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`,
-    //   Method.GET,
-    //   ContentType.JSON,
-    //   undefined,
-    //   getMessageDuplaicate
-    // );
-  };
-
-  const getMessageDuplaicate = (status, data) => {
-    authCtx.checkToken();
-    if (!status) {
-      Alert.alert("", t("Something_Wrong"));
-      return;
-    }
-    if (status && data) {
-      setDuplicateOther(false);
-      navigation.dispatch(StackActions.popToTop());
-      navigation.navigate("HomeSwap", {
-        screen: "ViewContact",
-        params: { idContact: duplicateInfo.id_duplicate },
+  useEffect(() => {
+    // console.log("route.params:", route.params);
+    if (route.params) {
+      setValue({
+        name: route.params.contact.name,
+        job_title: route.params.contact.job_title,
+        company: route.params.contact.company,
+        phone: route.params.contact.phone,
+        email: route.params.contact.email,
+        fax: route.params.contact.fax,
+        address: route.params.contact.address,
+        note: route.params.contact.note,
+        website: route.params.contact.website,
+        img_url: route.params.contact.img_url,
       });
-      return;
     }
-  };
-
-  const handleDuplicate = () => {
-    navigation.dispatch(StackActions.popToTop());
-    navigation.navigate("HomeSwap", {
-      screen: "UpdateContact",
-      params: { idContact: duplicateInfo.id },
-    });
-  };
-
-  const handleOnCancel = () => {
-    setDuplicateOther(false);
-    navigation.dispatch(StackActions.popToTop());
-    navigation.navigate("HomeSwap", {
-      screen: "ViewContact",
-      params: { idContact: duplicateInfo.id_duplicate },
-    });
-  };
+  }, [route.params, route.params?.contact]);
 
   return (
-    <Provider>
-      <LoadingDialog onVisible={isLoading} />
-      <ModalContact
-        visible={duplicate}
-        onPress={handleDuplicate}
-        onPressVisable={() => setDuplicate(false)}
-        context={DuplicateModel()}
-        onCancel={() => setDuplicate(false)}
-      />
-      <ModalContact
-        visible={duplicateOther}
-        onPress={handleDuplicateOther}
-        onPressVisable={() => setDuplicateOther(false)}
-        context={DuplicateInfoModel(duplicateInfo.owner)}
-        onCancel={handleOnCancel}
-      />
+    <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        <ShimmerPlaceholder
-          visible={loading}
-          width={windowWidth * 0.9}
-          height={windowHeight * 0.3}
-          shimmerStyle={{ borderRadius: 10, marginBottom: 10 }}
-        >
-          <View style={styles.imgContact}>
-            {route.params && formRef.current && <Image style={styles.image} />}
-          </View>
-        </ShimmerPlaceholder>
+        {/* ShimmerPlaceholder can be removed since we are not waiting for any data */}
+        <View style={styles.imgContact}>
+          {/* Placeholder image or logic to show selected image */}
+          <Image style={styles.image} source={images[value.img_url]} />
+        </View>
       </View>
 
       <Formik
         initialValues={value}
         onSubmit={handleOnSubmit}
         validationSchema={AddContactSchema}
-        innerRef={formRef}
+        enableReinitialize={true}
       >
         {({
           handleChange,
@@ -267,86 +87,63 @@ const UpdateContact = ({ route, navigation }) => {
           values,
           errors,
           touched,
-        }) => {
-          return (
-            <View style={styles.formInput}>
-              <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-              >
-                {formInput.map((item, index) => {
-                  return (
-                    <View key={index} style={styles.formInput_component}>
-                      <View style={styles.formInput_item}>
-                        <ShimmerPlaceholder
-                          visible={loading}
-                          style={{ width: "100%" }}
-                          shimmerStyle={styles.shimmer_FormInput}
-                        >
-                          <View style={styles.formInput_item_component}>
-                            <Icon size={20} name={item.icon} color="#1890FF" />
-                            <View style={{ width: "100%", marginLeft: 10 }}>
-                              <Text
-                                style={{ fontWeight: "600", color: "#1890FF" }}
-                              >
-                                {item.title}
-                              </Text>
-                              <TextInput
-                                placeholder={item.placeholder}
-                                value={values[item.name]}
-                                multiline={item.multiline}
-                                // keyboardType={item.keyboardType}
-                                dense={true}
-                                style={styles.formInput_item_input}
-                                onChangeText={handleChange(item.name)}
-                                onBlur={handleBlur(item.name)}
-                                // error={errors[item.name] && touched[item.name]}
-                                theme={{
-                                  colors: {
-                                    primary: "#1890FF",
-                                    error: "#B22D1D",
-                                  },
-                                }}
-                              />
-                              {errors[item.name] && touched[item.name] ? (
-                                <View style={styles.formInput_item_error}>
-                                  <Text
-                                    style={styles.formInput_item_error_label}
-                                  >
-                                    {/* {t(errors[item.name])} */}
-                                  </Text>
-                                </View>
-                              ) : null}
-                            </View>
-                          </View>
-                        </ShimmerPlaceholder>
+        }) => (
+          <View style={styles.formInput}>
+            <KeyboardAwareScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
+            >
+              {formInput.map((item, index) => (
+                <View key={index} style={styles.formInput_component}>
+                  <View style={styles.formInput_item}>
+                    <View style={styles.formInput_item_component}>
+                      <Icon
+                        size={20}
+                        style={{ marginLeft: 20 }}
+                        name={item.icon}
+                        color="#1890FF"
+                      />
+                      <View style={{ width: "100%", marginLeft: 10 }}>
+                        <Text style={{ fontWeight: "600", color: "#1890FF" }}>
+                          {item.title}
+                        </Text>
+                        <TextInput
+                          placeholder={item.placeholder}
+                          value={values[item.name]}
+                          multiline={item.multiline}
+                          dense={true}
+                          style={styles.formInput_item_input}
+                          onChangeText={handleChange(item.name)}
+                          onBlur={handleBlur(item.name)}
+                          theme={{
+                            colors: {
+                              primary: "#1890FF",
+                              error: "#B22D1D",
+                            },
+                          }}
+                        />
+                        {errors[item.name] && touched[item.name] && (
+                          <Text style={styles.formInput_item_error_label}>
+                            {/* {errors[item.name]} */}
+                          </Text>
+                        )}
                       </View>
                     </View>
-                  );
-                })}
-                <View style={{ marginBottom: 15 }} />
-              </KeyboardAwareScrollView>
-              <View style={styles.footer}>
-                <Button
-                  onPress={() => navigation.goBack()}
-                  //   style={styles.footer_button_label}
-                  color="#1890FF"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  //   style={styles.footer_button_label}
-                  color="#1890FF"
-                  //   onPress={handleSubmit}
-                >
-                  Save
-                </Button>
-              </View>
+                  </View>
+                </View>
+              ))}
+              <View style={{ marginBottom: 15 }} />
+            </KeyboardAwareScrollView>
+            <View style={styles.footer}>
+              <Button onPress={() => navigation.goBack()} color="#1890FF">
+                Cancel
+              </Button>
+              <Button color="#1890FF">Save</Button>
             </View>
-          );
-        }}
+          </View>
+        )}
       </Formik>
-    </Provider>
+    </View>
   );
 };
 
