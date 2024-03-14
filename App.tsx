@@ -7,9 +7,8 @@ import {
   Platform,
 } from "react-native";
 import Route from "./src/navigation/Router";
-import { AuthProvider } from "./src/store/AuthContext";
 import { Provider } from "react-redux";
-import store from "./src/redux/store";
+import { store } from "./store";
 
 const App = () => {
   LogBox.ignoreLogs([
@@ -29,13 +28,10 @@ const App = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <AuthProvider> */}
       <Provider store={store}>
         <StatusBar barStyle="dark-content" />
         <Route />
       </Provider>
-
-      {/* </AuthProvider> */}
     </SafeAreaView>
   );
 };

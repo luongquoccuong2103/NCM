@@ -23,10 +23,12 @@ import {
 import styles from "./styles";
 import { FormatDate } from "../../validate/FormatDate";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import AuthContext from "../../store/AuthContext";
 import ModalHome from "../../components/Home/ModalHome";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { itemHome } from "../../../mocks/home";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
+import { contact } from "../../types/contact.type";
 // create a component
 const images = {
   card1: require("../../../assets/cards/card1.png"),
@@ -47,62 +49,22 @@ const listRequest = {
 };
 
 const Home = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+  const listContact = useSelector(
+    (state: RootState) => state.contact.contactList
+  );
+  const [listFilter, setListFilter] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [countContact, setContContact] = useState(itemHome.length);
-  const [listContact, setListContact] = useState(itemHome);
+  const [countContact, setCountContact] = useState(itemHome.length);
   const [loading, setLoading] = useState(false);
-  const [listFilter, setListFilter] = useState(itemHome);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [modalFloatVisible, setModalFloatVisible] = useState(false);
   const [sort, setSort] = useState("create_date");
-  const authCtx = useContext(AuthContext);
-  const [page, setPage] = useState(1);
-  const [loadMore, setLoadMore] = useState(false);
-  //   useEffect(() => {
-  //     if (true) {
-  //       FetchApi(
-  //         ContactAPI.ViewContact,
-  //         Method.GET,
-  //         ContentType.JSON,
-  //         undefined,
-  //         getContact
-  //       );
-  //       setLoading(true);
-  //     }
-  //   }, []);
 
-  //   useEffect(() => {
-  //     FetchApi(
-  //       `${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`,
-  //       Method.GET,
-  //       ContentType.JSON,
-  //       undefined,
-  //       getContactFilter
-  //     );
-  //   }, [route.params, navigation]);
-
-  //   useEffect(() => {
-  //     isFocused &&
-  //       FetchApi(
-  //         `${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`,
-  //         Method.GET,
-  //         ContentType.JSON,
-  //         undefined,
-  //         getContactFilter
-  //       );
-  //   }, [isFocused]);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // FetchApi(
-    //   `${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`,
-    //   Method.GET,
-    //   ContentType.JSON,
-    //   undefined,
-    //   getContactFilter
-    // );
-  }, []);
+  useEffect(() => {
+    setListFilter(listContact);
+  }, [listContact]);
 
   const handleSearch = (searchText) => {
     const formattedQuery = searchText.trim().toLowerCase();
@@ -116,31 +78,14 @@ const Home = ({ route, navigation }) => {
       });
       setListFilter(filteredContacts);
     } else {
-      // Nếu chuỗi tìm kiếm rỗng hoặc chỉ chứa khoảng trắng, hiển thị tất cả các liên hệ
       setListFilter(itemHome);
-    }
-  };
-
-  const getContact = (status, data) => {
-    authCtx.checkToken();
-    // setLoading(false);
-    if (!status) {
-      Alert.alert("", "Something wrong");
-      return;
-    }
-    if (itemHome) {
-      if (itemHome.length > 0) {
-        setListContact(data.data);
-        setListFilter(data.data);
-        setContContact(itemHome.length);
-      }
     }
   };
 
   const handlePressSort = (item) => {
     setSort(item.value);
-    // console.log(item.value);
-    listContact.sort((a, b) => {
+    console.log(listFilter);
+    const sortedList = [...listFilter].sort((a, b) => {
       if (item.value === "create_date") {
         let dateA = new Date(a.created_at.split("-").reverse().join("-"));
         let dateB = new Date(b.created_at.split("-").reverse().join("-"));
@@ -166,6 +111,7 @@ const Home = ({ route, navigation }) => {
         return 0;
       }
     });
+    setListFilter(sortedList);
     setModalFloatVisible(!modalFloatVisible);
   };
 
@@ -177,54 +123,6 @@ const Home = ({ route, navigation }) => {
     setModalFloatVisible(!modalFloatVisible);
   };
 
-  const handleLoadMore = (e) => {
-    // FetchApi(
-    //   `${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}&page=${page + 1}`,
-    //   Method.GET,
-    //   ContentType.JSON,
-    //   undefined,
-    //   getContactLoadMore
-    // );
-    // setLoadMore(true);
-  };
-
-  const getContactFilter = (status, data) => {
-    authCtx.checkToken();
-    // setLoading(false);
-    setRefreshing(false);
-    if (itemHome) {
-      setPage(1);
-      if (itemHome) {
-        if (itemHome.length > 0) {
-          setListFilter(itemHome);
-          setContContact(itemHome.length);
-          return;
-        }
-        if (itemHome.length == 0) {
-          setListFilter([]);
-          setContContact(0);
-          return;
-        }
-      }
-      if (!itemHome) {
-        setListFilter([]);
-        setContContact(0);
-        return;
-      }
-    }
-  };
-
-  const getContactLoadMore = (data) => {
-    setLoadMore(false);
-    if (itemHome) {
-      if (itemHome.length > 0) {
-        setListFilter([...listFilter, ...itemHome]);
-        setContContact(listFilter.length + itemHome.length);
-        setPage(page + 1);
-      }
-    }
-  };
-
   //   const handleAddContact = () => {
   //     navigation.navigate("HomeSwap", {
   //       screen: "UpdateContact",
@@ -232,8 +130,10 @@ const Home = ({ route, navigation }) => {
   //     });
   //     setModalFloatVisible(!modalFloatVisible);
   //   };
-
-  const CardContact = ({ item }) => {
+  interface cardContact {
+    item: contact;
+  }
+  const CardContact = ({ item }: cardContact) => {
     return (
       <Card
         mode="elevated"
@@ -245,7 +145,6 @@ const Home = ({ route, navigation }) => {
             params: {
               contact: item,
               showFooter: true,
-              request: item.status_request,
             },
           });
         }}
@@ -264,25 +163,11 @@ const Home = ({ route, navigation }) => {
               <Text style={styles.nameContact} numberOfLines={1}>
                 {item.name}
               </Text>
-
-              {!Boolean(item.status_request) &&
-                item.owner_id !== item.createdBy && (
-                  <Icon name="account-alert" size={24} color="#cc6e1b" />
-                )}
-              {Boolean(item.status_request) && (
-                <Icon
-                  name={listRequest[item.status_request].icon}
-                  size={24}
-                  color={listRequest[item.status_request].color}
-                />
-              )}
             </View>
-            {!Boolean(item.status_request) &&
-              item.owner_id === item.createdBy && (
-                <Text style={styles.titleContact} numberOfLines={1}>
-                  {item.job_title}
-                </Text>
-              )}
+
+            <Text style={styles.titleContact} numberOfLines={1}>
+              {item.job_title}
+            </Text>
             <View style={styles.title}>
               <Text numberOfLines={1} style={styles.companyContact}>
                 {item.company}
@@ -303,14 +188,6 @@ const Home = ({ route, navigation }) => {
         <Text style={styles.listContainer_label}>No Contact</Text>
       </View>
     );
-  };
-
-  const FooterList = () => {
-    return loadMore ? (
-      <View>
-        <ActivityIndicator color="#1890FF" size="small" />
-      </View>
-    ) : null;
   };
 
   return (
@@ -335,11 +212,8 @@ const Home = ({ route, navigation }) => {
           <Text style={styles.labelList}>Name Card ({countContact})</Text>
         </View>
         <View style={styles.listContainer}>
-          {/* {loading && <LoadingDialog onVisible={loading} />} */}
           <FlatList
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
+            refreshControl={<RefreshControl refreshing={refreshing} />}
             style={{ width: "100%" }}
             contentContainerStyle={{
               flexGrow: 1,
@@ -349,10 +223,9 @@ const Home = ({ route, navigation }) => {
             renderItem={CardContact}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
-            onEndReached={handleLoadMore}
+            // onEndReached={handleLoadMore}
             onEndReachedThreshold={Platform.OS === "android" ? 0.1 : 0.5}
             ListEmptyComponent={EmptyList}
-            ListFooterComponent={FooterList}
           />
         </View>
         <ModalHome

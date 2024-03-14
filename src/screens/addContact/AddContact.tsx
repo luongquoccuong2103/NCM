@@ -18,7 +18,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import ModalContact from "../../components/Addcontact/ModelContact";
 import TextInputItem from "../../components/Addcontact/TextInputItem";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import AuthContext from "../../store/AuthContext";
 import { FormInput } from "../../components/Addcontact/ContextAddContact";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { useTranslation } from "react-i18next";
@@ -30,7 +29,6 @@ const AddContact = ({ contact, loading, navigation }) => {
     },
   });
   const { t, i18n } = useTranslation();
-  const authCtx = useContext(AuthContext);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const formRef = useRef(undefined);
@@ -94,7 +92,6 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   const getMessage = (status, data) => {
     setLoadingDialog(false);
-    authCtx.checkToken();
     if (!status) {
       if (data) {
         if (data.message === "C0005") {
@@ -130,28 +127,6 @@ const AddContact = ({ contact, loading, navigation }) => {
         return;
       }
     }
-  };
-
-  const handleDuplicate = () => {
-    navigation.dispatch(StackActions.popToTop());
-    navigation.navigate("HomeSwap", {
-      screen: "UpdateContact",
-      params: { idContact: contactId },
-    });
-  };
-
-  const handleDuplicateOther = () => {
-    // FetchApi(
-    //   `${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`,
-    //   Method.GET,
-    //   ContentType.JSON,
-    //   undefined,
-    //   getMessageDuplaicate
-    // );
-  };
-
-  const getMessageDuplaicate = (status, data) => {
-    authCtx.checkToken();
   };
 
   const handleOnCancel = () => {

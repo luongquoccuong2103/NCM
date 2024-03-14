@@ -13,7 +13,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import ModalContact from "../../components/Addcontact/ModelContact";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import AuthContext from "../../store/AuthContext";
 import { FormInput } from "../../components/Addcontact/ContextAddContact";
 
 const UpdateContact = ({ route, navigation }) => {

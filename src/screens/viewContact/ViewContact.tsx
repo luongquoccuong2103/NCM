@@ -17,7 +17,6 @@ import { useIsFocused } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import AuthContext from "../../store/AuthContext";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -43,7 +42,6 @@ const ViewContact = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   const [contact, setContact] = useState(route.params.contact);
-  const authCtx = useContext(AuthContext);
   // console.log("aaaa", route.param);
   //   useEffect(() => {
   // setLoading(true);
@@ -56,33 +54,10 @@ const ViewContact = ({ navigation, route }) => {
   // );
   //   }, []);
 
-  const getContact = (status, data) => {
-    authCtx.checkToken();
-    if (!status) {
-      Alert.alert("", "Something wrong");
-      return;
-    }
-    if (status && data) {
-      setContact(data.data);
-      setLoading(false);
-    }
-  };
-
   const handlePressUpdateContact = () => {
     navigation.navigate("UpdateContact", {
       contact,
     });
-  };
-
-  const getMessage = (status, data) => {
-    authCtx.checkToken();
-    if (!status) {
-      Alert.alert("", "Something wrong 1");
-      return;
-    }
-    if (status && data) {
-      navigation.navigate("Bottom", { screen: "HomeScreen" });
-    }
   };
 
   return (

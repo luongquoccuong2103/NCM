@@ -9,7 +9,6 @@ import {
 import { Button, Card } from "react-native-paper";
 import styles from "../../screens/home/styles";
 import { useContext, useState } from "react";
-import AuthContext from "../../store/AuthContext";
 
 const ModalHome = ({
   visible,
@@ -18,8 +17,6 @@ const ModalHome = ({
   onPressSort,
   onPressAdd,
 }) => {
-  const authCtx = useContext(AuthContext);
-
   const listSort = [
     {
       name: "date",
