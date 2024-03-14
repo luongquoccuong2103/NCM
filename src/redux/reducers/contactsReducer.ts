@@ -1,4 +1,4 @@
-import { itemHome } from "../../mocks/home";
+import { itemHome } from "../../../mocks/home";
 const initialState = {
   contactList: itemHome,
   updatedContact: null,
