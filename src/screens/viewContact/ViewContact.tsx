@@ -42,17 +42,6 @@ const ViewContact = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   const [contact, setContact] = useState(route.params.contact);
-  // console.log("aaaa", route.param);
-  //   useEffect(() => {
-  // setLoading(true);
-  // FetchApi(
-  //   `${ContactAPI.ViewContact}/${route.params.idContact}`,
-  //   Method.GET,
-  //   ContentType.JSON,
-  //   undefined,
-  //   getContact
-  // );
-  //   }, []);
 
   const handlePressUpdateContact = () => {
     navigation.navigate("UpdateContact", {

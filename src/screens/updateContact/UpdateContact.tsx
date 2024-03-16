@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import ModalContact from "../../components/Addcontact/ModelContact";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { FormInput } from "../../components/Addcontact/ContextAddContact";
+import { useDispatch } from "react-redux";
+import { updateContact } from "../home/home.reducer";
 
 const UpdateContact = ({ route, navigation }) => {
   const windowWidth = Dimensions.get("window").width;
@@ -25,6 +27,7 @@ const UpdateContact = ({ route, navigation }) => {
     // Add more as needed
   };
   const [value, setValue] = useState({
+    id: "",
     name: "",
     job_title: "",
     company: "",
@@ -38,17 +41,25 @@ const UpdateContact = ({ route, navigation }) => {
   });
 
   const formInput = FormInput();
-  // console.log(route.params);
+  const dispatch = useDispatch();
+
   const handleOnSubmit = (values) => {
-    // Logic to handle form submission
-    console.log("aa");
+    dispatch(updateContact(values));
+
+    Alert.alert("Success", "Contact updated successfully!", [
+      {
+        text: "OK",
+        onPress: () => {
+          navigation.navigate("HomeScreen");
+        },
+      },
+    ]);
   };
-  // console.log(route.params.contact);
 
   useEffect(() => {
-    // console.log("route.params:", route.params);
     if (route.params) {
       setValue({
+        id: route.params.contact.id,
         name: route.params.contact.name,
         job_title: route.params.contact.job_title,
         company: route.params.contact.company,
@@ -137,7 +148,14 @@ const UpdateContact = ({ route, navigation }) => {
               <Button onPress={() => navigation.goBack()} color="#1890FF">
                 Cancel
               </Button>
-              <Button color="#1890FF">Save</Button>
+              <Button
+                color="#1890FF"
+                onPress={() => {
+                  handleOnSubmit(values);
+                }}
+              >
+                Save
+              </Button>
             </View>
           </View>
         )}
