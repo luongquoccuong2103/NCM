@@ -79,17 +79,6 @@ const AddContact = ({ contact, loading, navigation }) => {
     }
   };
 
-  const handleSubmit = (values) => {
-    setLoadingDialog(true);
-    // FetchApi(
-    //   ContactAPI.AddContact,
-    //   Method.POST,
-    //   ContentType.JSON,
-    //   values,
-    //   getMessage
-    // );
-  };
-
   const getMessage = (status, data) => {
     setLoadingDialog(false);
     if (!status) {
@@ -141,20 +130,6 @@ const AddContact = ({ contact, loading, navigation }) => {
   return (
     <Provider>
       <LoadingDialog visible={loadingDialog} />
-      {/* <ModalContact
-        visible={duplicate}
-        onPress={handleDuplicate}
-        onPressVisable={() => setDuplicate(false)}
-        context={DuplicateModel()}
-        onCancel={() => setDuplicate(false)}
-      />
-      <ModalContact
-        visible={duplicateOther}
-        onPress={handleDuplicateOther}
-        onPressVisable={() => setDuplicateOther(false)}
-        context={DuplicateInfoModel(duplicateInfo.owner)}
-        onCancel={handleOnCancel}
-      /> */}
       <View style={{ alignItems: "center" }}>
         <ShimmerPlaceholder
           visible={loading}
@@ -174,7 +149,7 @@ const AddContact = ({ contact, loading, navigation }) => {
       </View>
       <Formik
         initialValues={value}
-        onSubmit={handleSubmit}
+        onSubmit={() => {}}
         validationSchema={AddContactSchema}
         innerRef={formRef}
       >

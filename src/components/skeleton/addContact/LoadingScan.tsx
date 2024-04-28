@@ -31,30 +31,6 @@ const SkeletonAddContact = ({ route, navigation }) => {
     );
     return manipResult;
   };
-  useEffect(() => {
-    // if (route.params.newPhoto) {
-    //   crop()
-    //     .then((e) => {
-    //       FetchApi(
-    //         ContactAPI.Scan,
-    //         Method.POST,
-    //         ContentType.JSON,
-    //         { image: "data:image/jpg;base64," + e.base64 },
-    //         getData
-    //       );
-    //     })
-    //     .catch();
-    // }
-    // if (route.params.pickPhoto) {
-    //   FetchApi(
-    //     ContactAPI.Scan,
-    //     Method.POST,
-    //     ContentType.JSON,
-    //     { image: "data:image/jpg;base64," + route.params.pickPhoto.base64 },
-    //     getData
-    //   );
-    // }
-  }, []);
 
   const getData = (status, data) => {
     if (!status) {

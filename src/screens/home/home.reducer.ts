@@ -17,7 +17,6 @@ const initialState: contactState = {
   contactList: itemHome,
 };
 
-// Reducer
 const contactListReducer = createReducer(initialState, (builder) => {
   builder.addCase(updateContact, (state, action) => {
     const index = state.contactList.findIndex(
