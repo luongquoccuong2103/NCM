@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StatusBar,
   LogBox,
   Appearance,
   Platform,
+  Button,
 } from "react-native";
-import Route from "./src/navigation/Router";
 import { Provider } from "react-redux";
 import { store } from "./store";
-
+import Route from "./src/navigation/Router";
 const App = () => {
   LogBox.ignoreLogs([
     "ViewPropTypes will be removed",
     "ColorPropType will be removed",
   ]);
-
+  const [data, setData] = useState([{}]);
   useEffect(() => {
     Appearance.getColorScheme() === "dark"
       ? StatusBar.setBarStyle("light-content")
@@ -24,6 +24,12 @@ const App = () => {
       StatusBar.setBackgroundColor(
         Appearance.getColorScheme() === "dark" ? "#000" : "#fff"
       );
+    fetch("http://192.168.1.5:5000/members")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        console.log(data);
+      });
   }, []);
 
   return (

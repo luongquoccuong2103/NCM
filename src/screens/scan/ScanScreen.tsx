@@ -23,7 +23,7 @@ import styles from "./styles";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { t } from "i18next";
 import vCard from "vcf";
-
+import axios from "axios";
 const ScanScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   let cameraRef = useRef(undefined);
@@ -73,14 +73,29 @@ const ScanScreen = ({ navigation }) => {
   const takePic = async () => {
     let options = {
       quality: 0.5,
-      base64: true,
-      exif: false,
     };
 
-    let newPhoto = await cameraRef.current?.takePictureAsync(options); // <-- Applying optional chaining here
+    let newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     if (newPhoto) {
-      navigation.navigate("AddContact", { newPhoto: newPhoto });
+      const formData = new FormData();
+      formData.append("image", {
+        uri: newPhoto.uri,
+        type: "image/jpeg", // Thiết lập loại file
+        name: newPhoto.uri.split("/").pop(), // Tên file từ URI
+      });
+      axios
+        .post("http://192.168.1.5:5000/ocr_image", formData, {})
+        .then((response) => {
+          console.log("OCR Results:", response.data);
+          // navigation.navigate("ResultScreen", { ocrData: response.data });
+        })
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+          Alert.alert("Upload Error", "Failed to upload image for OCR.");
+        });
+      // console.log(newPhoto);
+      // navigation.navigate("", { newPhoto: newPhoto });
     } else {
       // Handle the case where takePictureAsync failed
       console.error("Failed to take a picture.");
@@ -94,9 +109,9 @@ const ScanScreen = ({ navigation }) => {
       quality: 0.8,
       base64: true,
     });
-    if (!result.canceled) {
-      navigation.navigate("AddContact", { pickPhoto: result });
-    }
+    // if (!result.canceled) {
+    //   navigation.navigate("", { pickPhoto: result });
+    // }
   };
 
   return (

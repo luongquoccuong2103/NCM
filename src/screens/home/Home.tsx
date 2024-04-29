@@ -31,7 +31,7 @@ import { RootState } from "../../../store";
 import { contact } from "../../types/contact.type";
 // create a component
 const images = {
-  card1: require("../../../assets/cards/card1.png"),
+  card1: require("../../../assets/cards/005.jpg"),
   card2: require("../../../assets/cards/card2.png"),
   card3: require("../../../assets/cards/card3.png"),
   // Add more as needed

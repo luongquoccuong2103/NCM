@@ -26,7 +26,7 @@ import SnackbarComponent from "../../components/viewcontact/Snackbar";
 import styles from "./styles";
 
 const images = {
-  card1: require("../../../assets/cards/card1.png"),
+  card1: require("../../../assets/cards/005.jpg"),
   card2: require("../../../assets/cards/card2.png"),
   card3: require("../../../assets/cards/card3.png"),
   // Add more as needed
