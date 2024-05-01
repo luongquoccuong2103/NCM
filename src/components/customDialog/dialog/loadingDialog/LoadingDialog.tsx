@@ -8,21 +8,29 @@ import {
   Dialog,
   Portal,
   Provider,
-  TextInput
+  TextInput,
 } from "react-native-paper";
 const LoadingDialog = (props) => {
   return (
     <Portal>
-      <Dialog visible={props.onVisible} style={{ borderRadius: 10, height: '25%' }} >
+      <Dialog
+        visible={props.visible}
+        style={{ borderRadius: 10, height: "25%" }}
+      >
         <Dialog.Title style={styles.title}>Loading...</Dialog.Title>
         <Dialog.Content>
           <View style={styles.loadingContainer}>
-          <AnimatedLottieView style={styles.loading} source={require('../../../../asset/animation/loading.json')} loop autoPlay />
+            <AnimatedLottieView
+              style={styles.loading}
+              source={require("./../../../../asset/animation/loading.json")}
+              loop
+              autoPlay
+            />
           </View>
         </Dialog.Content>
       </Dialog>
     </Portal>
-  )
-}
+  );
+};
 
-export default LoadingDialog
+export default LoadingDialog;

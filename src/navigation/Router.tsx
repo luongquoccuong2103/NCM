@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import RouteMovingBetweenScreen from "../components/navigation/RouteMovingBetweenScreen";
-// import RouteAuthentication from "../components/navigation/RouteAuthentication";
 
 const Route = () => {
   return (

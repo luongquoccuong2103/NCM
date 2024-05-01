@@ -27,12 +27,6 @@ const styles = (focused) =>
       backgroundColor: "#1890FF",
       borderRadius: 35,
     },
-    // labelScan: {
-    //     fontSize: 12,
-    //     color: '#ffff',
-    //     textAlign: 'center',
-    //     textTransform: 'uppercase',
-    // },
     shadow: {
       shadowColor: "#000",
       shadowOffset: {

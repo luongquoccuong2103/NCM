@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoadingScan from "../skeleton/addContact/LoadingScan";
 import ScanScreen from "../../screens/scan/ScanScreen";
+import AddContact from "../../screens/addContact/AddContact";
 const ScanStack = createNativeStackNavigator();
 
 const RouteMovingBetweenScanScreen = () => {
@@ -11,7 +11,7 @@ const RouteMovingBetweenScanScreen = () => {
       }}
     >
       <ScanStack.Screen name="Scan" component={ScanScreen} />
-      <ScanStack.Screen name="AddContact" component={LoadingScan} />
+      <ScanStack.Screen name="AddContact" component={AddContact} />
     </ScanStack.Navigator>
   );
 };

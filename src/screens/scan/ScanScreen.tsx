@@ -24,7 +24,7 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { t } from "i18next";
 import vCard from "vcf";
 import axios from "axios";
-const ScanScreen = ({ navigation }) => {
+const ScanScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   let cameraRef = useRef(undefined);
   const [hasCameraPermission, setHasCameraPermission] = useState(undefined);
@@ -72,13 +72,14 @@ const ScanScreen = ({ navigation }) => {
 
   const takePic = async () => {
     let options = {
-      quality: 0.5,
+      quality: 1,
     };
 
     let newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     if (newPhoto) {
       const formData = new FormData();
+
       formData.append("image", {
         uri: newPhoto.uri,
         type: "image/jpeg", // Thiết lập loại file
@@ -88,7 +89,19 @@ const ScanScreen = ({ navigation }) => {
         .post("http://192.168.1.5:5000/ocr_image", formData, {})
         .then((response) => {
           console.log("OCR Results:", response.data);
-          // navigation.navigate("ResultScreen", { ocrData: response.data });
+          const data = {
+            name: response?.data?.name || "",
+            job_title: response?.data?.jobTittle || "",
+            company: response?.data?.comapny || "",
+            phone: response?.data?.phoneNumber || "",
+            email: response?.data?.email || "",
+            fax: response?.data?.fax || "",
+            address: response?.data?.address || "",
+            note: "",
+            website: response?.data?.website || "",
+            img_url: newPhoto.uri || "",
+          };
+          navigation.navigate("AddContact", { newPhoto: data });
         })
         .catch((error) => {
           console.error("Error uploading image:", error);

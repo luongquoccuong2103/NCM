@@ -150,7 +150,7 @@ const Home = ({ route, navigation }) => {
       >
         <View style={styles.item}>
           <View>
-            <Image source={images[item.img_url]} style={styles.image} />
+            <Image source={{ uri: item.img_url }} style={styles.image} />
           </View>
           <View style={styles.txtContact}>
             <View

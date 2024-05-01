@@ -1,5 +1,3 @@
-import { useTranslation } from "react-i18next";
-
 export const FormInput = () => {
   const formInput = [
     {

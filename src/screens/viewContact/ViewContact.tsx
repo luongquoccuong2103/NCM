@@ -67,7 +67,7 @@ const ViewContact = ({ navigation, route }) => {
           <View style={styles.body_imgContact}>
             {contact && (
               <Image
-                source={images[contact.img_url]}
+                source={{ uri: contact.img_url }}
                 style={styles.body_imgContact_image}
               />
             )}

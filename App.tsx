@@ -10,6 +10,8 @@ import {
 import { Provider } from "react-redux";
 import { store } from "./store";
 import Route from "./src/navigation/Router";
+import AddContact from "./src/screens/addContact/AddContact";
+import LoadingDialog from "./src/components/customDialog/dialog/loadingDialog/LoadingDialog";
 const App = () => {
   LogBox.ignoreLogs([
     "ViewPropTypes will be removed",
@@ -28,7 +30,6 @@ const App = () => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log(data);
       });
   }, []);
 

@@ -4,27 +4,18 @@ import { View, Text, Image, Dimensions, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TextInput, Provider, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { StackActions } from "@react-navigation/native";
 import styles from "./styles";
 import { Formik } from "formik";
 import AddContactSchema from "../../validate/ValidateFormAddContact";
-import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
-import { LinearGradient } from "expo-linear-gradient";
-import { useTranslation } from "react-i18next";
-import ModalContact from "../../components/Addcontact/ModelContact";
-import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { FormInput } from "../../components/Addcontact/ContextAddContact";
 import { useDispatch } from "react-redux";
 import { updateContact } from "../home/home.reducer";
 
 const UpdateContact = ({ route, navigation }) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
   const images = {
     card1: require("../../../assets/cards/card1.png"),
     card2: require("../../../assets/cards/card2.png"),
     card3: require("../../../assets/cards/card3.png"),
-    // Add more as needed
   };
   const [value, setValue] = useState({
     id: "",
@@ -77,9 +68,7 @@ const UpdateContact = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        {/* ShimmerPlaceholder can be removed since we are not waiting for any data */}
         <View style={styles.imgContact}>
-          {/* Placeholder image or logic to show selected image */}
           <Image style={styles.image} source={images[value.img_url]} />
         </View>
       </View>
