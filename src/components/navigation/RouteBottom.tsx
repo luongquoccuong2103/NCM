@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 const Mock = () => {
   return (
     <View>
-      <Text>a</Text>
+      <Text>work in progress</Text>
     </View>
   );
 };

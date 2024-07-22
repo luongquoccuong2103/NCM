@@ -17,7 +17,6 @@ const initialState: contactState = {
   contactList: itemHome,
 };
 
-// Action creator để thêm contact vào danh sách
 export const addContact = createAction(
   "contact/addContact",
   function prepare(newContact: contact) {

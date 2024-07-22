@@ -60,6 +60,14 @@ const styles = StyleSheet.create({
   take_picture: {
     marginRight: "27%",
   },
+  focusBox: {
+    position: "absolute",
+    width: 40,
+    height: 40,
+    borderColor: "#FFF",
+    borderWidth: 2,
+    borderRadius: 4,
+  },
 });
 
 export default styles;

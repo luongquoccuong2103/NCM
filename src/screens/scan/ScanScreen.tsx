@@ -6,8 +6,9 @@ import {
   useWindowDimensions,
   Alert,
 } from "react-native";
-import { useEffect, useRef, useState } from "react";
-import { Camera, FlashMode } from "expo-camera";
+import React, { useEffect, useRef, useState } from "react";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { FlashMode } from "expo-camera/build/legacy/Camera.types";
 import * as ImagePicker from "expo-image-picker";
 import {
   ActivityIndicator,
@@ -20,27 +21,23 @@ import {
 import { useIsFocused } from "@react-navigation/native";
 import iconPath from "../../constants/iconPath";
 import styles from "./styles";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { t } from "i18next";
-import vCard from "vcf";
 import axios from "axios";
+import { t } from "i18next";
+
 const ScanScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
-  let cameraRef = useRef(undefined);
-  const [hasCameraPermission, setHasCameraPermission] = useState(undefined);
+  let cameraRef = useRef(null);
   const [flashMode, setFlashMode] = useState(FlashMode.off);
-  const [stopScan, setStopScan] = useState(false);
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3);
-
+  const [permission, requestPermission] = useCameraPermissions();
   useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(cameraPermission.status === "granted");
-    })();
+    if (!permission) {
+      requestPermission();
+    }
   }, []);
 
-  if (hasCameraPermission === undefined) {
+  if (!permission) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Card elevation={2} style={{ width: "80%", padding: 20 }}>
@@ -51,7 +48,7 @@ const ScanScreen = ({ navigation, route }) => {
         </Card>
       </View>
     );
-  } else if (!hasCameraPermission) {
+  } else if (!permission.granted) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Card elevation={2} style={{ width: "80%", padding: 20 }}>
@@ -63,12 +60,47 @@ const ScanScreen = ({ navigation, route }) => {
             <Button onPress={() => navigation.goBack()}>
               {t("Screen_Scan_Alert_Button_Cancel")}
             </Button>
-            <Button>{t("Screen_Scan_Alert_Button_Ok")}</Button>
+            <Button onPress={requestPermission}>
+              {t("Screen_Scan_Alert_Button_Ok")}
+            </Button>
           </Card.Actions>
         </Card>
       </View>
     );
   }
+
+  const handleImageUpload = async (uri) => {
+    const formData = new FormData();
+    formData.append("image", {
+      uri,
+      type: "image/jpeg",
+      name: uri.split("/").pop(),
+    });
+
+    try {
+      const response = await axios.post(
+        "http://192.168.1.180:5000/ocr_image",
+        formData,
+        {}
+      );
+      const data = {
+        name: response?.data?.name || "",
+        job_title: response?.data?.jobTittle || "",
+        company: response?.data?.comapny || "",
+        phone: response?.data?.phoneNumber || "",
+        email: response?.data?.email || "",
+        fax: response?.data?.fax || "",
+        address: response?.data?.address || "",
+        note: "",
+        website: response?.data?.website || "",
+        img_url: uri || "",
+      };
+      navigation.navigate("AddContact", { newPhoto: data });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Alert.alert("Upload Error", "Failed to upload image for OCR.");
+    }
+  };
 
   const takePic = async () => {
     let options = {
@@ -78,39 +110,8 @@ const ScanScreen = ({ navigation, route }) => {
     let newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     if (newPhoto) {
-      const formData = new FormData();
-
-      formData.append("image", {
-        uri: newPhoto.uri,
-        type: "image/jpeg", // Thiết lập loại file
-        name: newPhoto.uri.split("/").pop(), // Tên file từ URI
-      });
-      axios
-        .post("http://192.168.1.5:5000/ocr_image", formData, {})
-        .then((response) => {
-          console.log("OCR Results:", response.data);
-          const data = {
-            name: response?.data?.name || "",
-            job_title: response?.data?.jobTittle || "",
-            company: response?.data?.comapny || "",
-            phone: response?.data?.phoneNumber || "",
-            email: response?.data?.email || "",
-            fax: response?.data?.fax || "",
-            address: response?.data?.address || "",
-            note: "",
-            website: response?.data?.website || "",
-            img_url: newPhoto.uri || "",
-          };
-          navigation.navigate("AddContact", { newPhoto: data });
-        })
-        .catch((error) => {
-          console.error("Error uploading image:", error);
-          Alert.alert("Upload Error", "Failed to upload image for OCR.");
-        });
-      // console.log(newPhoto);
-      // navigation.navigate("", { newPhoto: newPhoto });
+      handleImageUpload(newPhoto.uri);
     } else {
-      // Handle the case where takePictureAsync failed
       console.error("Failed to take a picture.");
     }
   };
@@ -119,12 +120,12 @@ const ScanScreen = ({ navigation, route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      quality: 0.8,
-      base64: true,
+      quality: 1,
     });
-    // if (!result.canceled) {
-    //   navigation.navigate("", { pickPhoto: result });
-    // }
+    console.log(result);
+    if (!result.canceled) {
+      handleImageUpload(result.assets[0].uri);
+    }
   };
 
   return (
@@ -149,11 +150,13 @@ const ScanScreen = ({ navigation, route }) => {
       </View>
       <View style={[styles.preview, { height: height }]}>
         {isFocused && (
-          <Camera
+          <CameraView
             style={[styles.preview_camera, { height: height }]}
             ref={cameraRef}
             ratio="4:3"
-            flashMode={flashMode}
+            flashMode={"auto"}
+            mode={"picture"}
+            autofocus={"on"}
           >
             <View style={styles.preview_overlay}>
               <Image
@@ -161,7 +164,7 @@ const ScanScreen = ({ navigation, route }) => {
                 source={iconPath.icOverlay}
               />
             </View>
-          </Camera>
+          </CameraView>
         )}
       </View>
 

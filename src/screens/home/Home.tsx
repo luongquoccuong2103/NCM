@@ -25,7 +25,6 @@ import { FormatDate } from "../../validate/FormatDate";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ModalHome from "../../components/Home/ModalHome";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import { itemHome } from "../../../mocks/home";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
 import { contact } from "../../types/contact.type";
@@ -55,7 +54,7 @@ const Home = ({ route, navigation }) => {
   );
   const [listFilter, setListFilter] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [countContact, setCountContact] = useState(itemHome.length);
+  const [countContact, setCountContact] = useState(listContact.length);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,6 +63,7 @@ const Home = ({ route, navigation }) => {
 
   useEffect(() => {
     setListFilter(listContact);
+    setCountContact(listContact.length);
   }, [listContact]);
 
   const handleSearch = (searchText) => {
@@ -72,13 +72,15 @@ const Home = ({ route, navigation }) => {
     setSearchQuery(formattedQuery);
 
     if (formattedQuery.length > 0) {
-      const filteredContacts = itemHome.filter((item) => {
+      const filteredContacts = listContact.filter((item) => {
         const nameMatch = item.name.toLowerCase().includes(formattedQuery);
         return nameMatch;
       });
       setListFilter(filteredContacts);
+      setCountContact(filteredContacts.length);
     } else {
-      setListFilter(itemHome);
+      setListFilter(listContact);
+      setCountContact(listContact.length);
     }
   };
 
